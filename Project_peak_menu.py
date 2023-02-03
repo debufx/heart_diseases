@@ -1,0 +1,76 @@
+from collections import namedtuple
+import altair as alt
+import math
+import pandas as pd
+import streamlit as st
+from PIL import Image
+st.title('Heart Peak __Project__')
+st.header('__Xavier DEBUF__')
+
+imageB = Image.open('pages/img/cyclecardiaque.jpg')
+st.image(imageB, caption='Cycle Cardiaque sain')
+cb3 = st.checkbox('Lien Github du notebook associé')
+cb1 = st.checkbox('Plan de la présentation')
+cb2 = st.checkbox('Problèmes et Enjeux')
+if cb3:
+    st.markdown('<https://github.com/XaRootUser/heartpeakPY>')
+if cb1:
+    st.header('Plan de la présentation')
+    st.subheader('présentation du problème et des enjeux.')
+    st.subheader('présentation des données (volumétrie, architecture, etc.).')
+    st.subheader('exploration des données (Datavisualisation).')
+    st.subheader('préparation des données.')
+    st.subheader('récapitulatifs des modèles créés et de leur performance.')
+    st.subheader('analyse du meilleur modèle pour chacun des deux dataframes.')
+    st.subheader('regard critique et perspectives')
+    st.subheader('conclusion.')
+st.markdown('---')
+if cb2:
+    st.markdown('# présentation du problème et des enjeux.')
+    st.markdown('## présentation du problème')
+    st.markdown('### Ce projet a pour objectif:')
+    st.markdown(' - #### la prédiction d’anomalie cardiaque ou ')
+    st.markdown(' - #### d’infarctus du myocarde.')
+    st.markdown('## DATA')
+    st.markdown('---')
+    st.markdown('## Deux banques de données de différents type d\'électrocardiogrammes. ')
+    st.markdown('### Banques de données labellisées:')
+    st.markdown(' - #### problème de classification.')
+    st.markdown('')
+    st.markdown('## Etat des pré-requis')
+    st.markdown(' - ***aucune notion scientifique poussée*** ')
+    st.markdown(' - ***ni sur les anomalies cardiaques*** ')
+    st.markdown(' - ***ni sur les infarctus du myocarde.***')
+    st.markdown('## Etat des Objectifs')
+    st.markdown(' - Capacités d’adaptation sur des enjeux métiers non maîtrisés')
+    st.markdown(' - Etendre mon champ de compétences ')
+    st.markdown(' - Capable de réaliser un étayage orienté données des corps de métier par transversalité')
+    cb12 = st.checkbox('Explication du Jeu de données mitbih ')
+    cb22 = st.checkbox('Explication du Jeu de données ptbdb')
+    cb32 = st.checkbox('Enjeu du projet')
+    if cb12:
+        st.markdown('# Présentation du problème ')
+        st.markdown(' ## Classification d\'arythmie cardiaque')
+        st.markdown(' - ### ***Cinq types d’ECG (ElectroCardioGramme)***')
+        st.markdown(' - #### la catégorie saine')
+        st.markdown(' - #### la fibrillation atriale, ')
+        st.markdown(' - #### la ventilation supra ventriculaires,')
+        st.markdown(' - #### la fusion ventriculaire ')
+        st.markdown(' - #### la classe d’ECG non classable mais présentant des anomalies')
+        st.markdown('## Constat :  Problème de classification multiple')
+        image1 = Image.open('pages/img/exemple_img_classique.png')
+        st.image(image1, caption='classification multiple d\'arythmie cardiaque')
+
+    if cb22:
+        st.markdown('# Problème de detection d\'infarctus du myocarde')
+        st.markdown('### Deux classes : ')
+        st.markdown(' - #### une saine, ')
+        st.markdown(' - #### l’autre : observation d’infarctus du myocarde.')
+        st.markdown('## Résolution d\'un problème de classification binaire.')
+        image1 = Image.open('pages/img/sain_malade_ptbdb.png')
+        st.image(image1, caption='classification binaire d\'infarctus du myocarde')
+    if cb32:
+        st.markdown('## Deux banques de données')
+        st.markdown('## Deux mode de résolution différentes : ')
+        st.markdown(' - ### ***Type de Modèles Identiques***')
+        st.markdown(' - ### ***Configuration de solutions différentes***')

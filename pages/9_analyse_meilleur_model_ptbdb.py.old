@@ -1,0 +1,70 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+from scipy.signal import find_peaks
+from sklearn.metrics import classification_report, plot_precision_recall_curve
+from imblearn.over_sampling import SMOTE
+from imblearn.metrics import classification_report_imbalanced, geometric_mean_score
+df1=pd.read_csv('pages/archive/ptbdb_abnormal.csv',header=None)
+df2=pd.read_csv('pages/archive/ptbdb_normal.csv',header=None)
+
+
+df=pd.concat([df1,df2],ignore_index=True,sort=False)
+df.isnull().sum().sum()
+X=df.iloc[:,:-1]
+y=df.iloc[:,-1]
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report,accuracy_score,confusion_matrix
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=28)
+import imblearn
+import keras
+from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix
+from keras.utils import to_categorical
+from PIL import Image
+# oversampling
+smote=SMOTE()
+X_sm_1, y_sm_1 = smote.fit_resample(X_train, y_train)
+scaler_1 = StandardScaler()
+X_sm_1 =scaler_1.fit_transform(X_sm_1)
+X_test_1 = scaler_1.transform(X_test)
+y_sm_1 = to_categorical(y_sm_1)
+y_test_1 = to_categorical(y_test)
+X_train_cnn = np.reshape(X_sm_1, (X_sm_1.shape[0], X_sm_1.shape[1], 1))
+X_test_cnn = np.reshape(X_test_1, (X_test_1.shape[0], X_test_1.shape[1], 1))
+def get_classification_report(y_test, y_pred):
+    from sklearn import metrics
+    report = classification_report_imbalanced(y_test, y_pred, output_dict=True)
+    df_classification_report = pd.DataFrame(report).transpose()
+    return df_classification_report
+model_dir = 'pages/modele/model_mycnn_ptdb_2.h5'
+model_cnn_opt = keras.models.load_model(model_dir)
+batch_size=32
+verbose=1
+_, mse, accuracy = model_cnn_opt.evaluate(X_test_1, y_test_1, batch_size=batch_size, verbose=verbose)
+st.markdown('# Modèle  le plus élevé qualitativement ')
+st.markdown('## Jeu de données infarctus du myocarde')
+st.markdown('### Réseau de neurones convolutif 1D ')
+st.markdown('#### Deux premières couches de convolution ')
+st.markdown(' - Deux filtre consecutif de 64 et respectivement un noyau de 5 puis de 3')
+st.markdown(' - Deux couches dense pour arriver à 2 unités en sortie de modèles, une par catégorie.')
+#st.subheader('mse:', mse.astype(float))
+#st.subheader('accuracy:', accuracy.astype(float))
+
+model_cnn_opt.summary(print_fn=lambda x: st.text(x))
+st.subheader("Confusion Matrix")
+pred_class_a = model_cnn_opt.predict(X_test_1).argmax(axis=1)
+rounded_labels_a = np.argmax(y_test_1, axis=1)
+get_classification_report(rounded_labels_a, pred_class_a)
+st.table(pd.crosstab(rounded_labels_a, pred_class_a, rownames=["reel"], colnames=["predict"]))
+metrics_df = get_classification_report(rounded_labels_a, pred_class_a)
+st.table(metrics_df)
+
+image1 = Image.open('pages/img/acc_model_ptb.png')
+st.image(image1, caption='accuracy model ptbdb')
+
+image1 = Image.open('pages/img/mse_model_ptb.png')
+st.image(image1, caption='mse model ptbdb')
+
+st.markdown(' - ***Le modèle pour la detection d\'infarctus du myocarde répond aux  exigences d’un statut critique en cadre de soin ou prévention***')

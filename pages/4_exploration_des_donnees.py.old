@@ -1,0 +1,31 @@
+import streamlit as st
+import matplotlib
+import streamlit as st
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import signal
+from PIL import Image
+
+
+st.markdown('# Exploration des données')
+st.markdown('### Complexe QRS & écart RR')
+image1 = Image.open('pages/img/qrs.jpg')
+st.image(image1, caption='Complexe QRS Sain')
+
+st.markdown('### Affichage simultané en transparence')
+image2 = Image.open('pages/img/alpha_def_img.png')
+st.image(image2, caption='affichage simultané en transparence')
+
+st.markdown('### Exemple de distribution de proéminence')
+image3 = Image.open('pages/img/exemple_proem.png')
+st.image(image3, caption='exemple de distribution de proéminence')
+
+st.markdown('### Distribution des medianes de proéminences')
+image4 = Image.open('pages/img/median_proem.png')
+st.image(image4, caption='distribution des medianes de proéminences')
+
+st.markdown('### Generation d\'image projet conv2D apparition des proéminences')
+image6 = Image.open('pages/img/proem_exemple_effet2D_v.png')
+st.image(image6, caption='generation d\'image projet conv2D')

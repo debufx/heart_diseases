@@ -1,0 +1,33 @@
+import streamlit as st
+
+st.markdown('# Critiques et perspectives')
+cb1 = st.checkbox('Arythmies cardiaques')
+cb2 = st.checkbox('Infarctus du myocarde')
+if cb1:
+    st.markdown('## Critiques arythmies cardiaques')
+    st.markdown('### Compréhension de l’apport des proéminences')
+    st.markdown(' - #### Dataset en espace à trois dimensions de type image en niveaux de gris ')
+    st.markdown(' - #### Pre-processing transformation de données numériques en images')
+    st.markdown(' - #### Lots nombreux d’observations.')
+    st.markdown(' - #### Manque de technicité sur le sujet en cours de projet')
+    st.markdown('---')
+    st.markdown('## Perspectives')
+    st.markdown(' - ### Meilleure gestion du volume de données en image')
+    st.markdown(' - ### L\'information des proéminences dans des Dataset pouvait servir:')
+    st.markdown(' - #### les réseaux de convolutions 2D ')
+    st.markdown(' - #### Eventuellement les GANs avec un discrimant capable de classer les ECG')
+
+st.markdown('---')
+if cb2:
+    st.markdown('## Critiques infarctus du myocarde')
+    st.markdown('### DataSet infarctus du myocarde')
+    st.markdown(' - #### En l\'état le modèle est optimal')
+    st.markdown(' - #### Il répond à la demande de précision et de rappel très fort')
+    st.markdown(' - #### La précision (haut ratio) : une observation est placé dans sa catégorie avec une très forte fiabilité')
+    st.markdown(' - #### le retour (haut ratio) : très faibles proportions de Faux Positif')
+    st.markdown('---')
+    st.markdown('## Perspectives')
+    st.markdown(' - ### Au vue des enjeux ce modèle peut être mise en production ')
+    st.markdown(' - ### Pour analyse')
+    st.markdown(' - #### Pour étayage du corps médical ')
+    st.markdown(' - #### Pour une aide fiable à la prise de décision')

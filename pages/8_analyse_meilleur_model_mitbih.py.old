@@ -1,0 +1,86 @@
+import streamlit as st
+from PIL import Image
+
+
+
+st.markdown('## Modèle acceptable sur le jeu de données d\'arythmie cardiaque')
+st.markdown('### Réseau de neurones convolutif 1D : ')
+st.markdown(' - #### Deux premières couches de convolution avec deux filtre consecutifs de 128 et respectivement un noyau de 5 puis de 3.')
+st.markdown(' - #### Normalisation du batch et pooling')
+st.markdown(' - #### Deux couches suivantes de filtres égaux à 64 et de noyaux de 5 et 3')
+st.markdown(' - #### Normalisation du batch et pooling')
+st.markdown(' - #### Deux couches suivantes de filtres égaux à 32 et de noyaux de 5 et 3')
+st.markdown(' - #### Normalisation du batch et pooling')
+st.markdown(' - #### Deux couches suivantes de filtres égaux à 16 et de noyaux de 5 et 3')
+st.markdown(' - #### Applatissement')
+st.markdown(' - #### Réduction d\'unité de réseau Dense jusqu\'à 5 unité pour 5 catégories en sortie')
+st.markdown('---')
+st.markdown('## Fonctionnement du réseau convolutif 1D')
+image1 = Image.open('pages/img/global_understand.jpg')
+st.image(image1, caption='Architecture pour un réseau de convolution 1D')
+image1 = Image.open('pages/img/a-Simple-scheme-of-a-one-dimension-1D-convolutional-operation-b-Full.jpg')
+st.image(image1, caption='Fonctionnement pour un réseau de convolution 1D')
+import pandas as pd
+import numpy as np
+import keras
+from scipy.signal import find_peaks
+from sklearn.metrics import classification_report
+from imblearn.over_sampling import SMOTE
+from imblearn.metrics import classification_report_imbalanced, geometric_mean_score
+from sklearn.model_selection import train_test_split,cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report,accuracy_score,confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+from keras.utils import to_categorical
+df1=pd.read_csv('pages/archive/mitbih_test.csv',header=None)
+df2=pd.read_csv('pages/archive/mitbih_train.csv',header=None)
+df=pd.concat([df1,df2],ignore_index=True,sort=False)
+df.isnull().sum().sum()
+X=df.iloc[:,:-1]
+y=df.iloc[:,-1]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=28)
+smote = SMOTE()
+X_sm, y_sm = smote.fit_resample(X_train, y_train)
+scaler = StandardScaler()
+X_sm =scaler.fit_transform(X_sm)
+X_test = scaler.transform(X_test)
+y_sm = to_categorical(y_sm)
+y_test = to_categorical(y_test)
+X_train_cnn = np.reshape(X_sm, (X_sm.shape[0], X_sm.shape[1], 1))
+X_test_cnn = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+def get_classification_report(y_test, y_pred):
+    from sklearn import metrics
+    report = classification_report_imbalanced(y_test, y_pred, output_dict=True)
+    df_classification_report = pd.DataFrame(report).transpose()
+    return df_classification_report
+model_dir = 'pages/modele/model_mycnn_mitbih_modelbest_128.h5'
+model_cnn_opt = keras.models.load_model(model_dir)
+batch_size=32
+verbose=1
+_, mse, accuracy = model_cnn_opt.evaluate(X_test, y_test, batch_size=batch_size, verbose=verbose)
+st.write('mse',  'accuracy', mse, accuracy)
+model_cnn_opt.summary(print_fn=lambda x: st.text(x))
+st.subheader("Confusion Matrix")
+pred_class_a = model_cnn_opt.predict(X_test).argmax(axis=1)
+rounded_labels_a = np.argmax(y_test, axis=1)
+get_classification_report(rounded_labels_a, pred_class_a)
+st.table(pd.crosstab(rounded_labels_a, pred_class_a, rownames=["reel"], colnames=["predict"]))
+metrics_df = get_classification_report(rounded_labels_a, pred_class_a)
+st.table(metrics_df)
+'''file_1 = X_test[56,:]
+scaler.transform(file_1)
+cb1 = st.checkbox('ligne  56, 57, 58 en prediction')
+if cb1:
+    pred_X = model_cnn_opt.predict(file_1).argmax(axis = 1)
+    st.write('ligne  56, 57, 58 en prediction:')
+    st.write(pred_X)
+    res_1 = np.argmax(y_test[56], axis=1)
+    st.write( res_1)
+'''
+st.markdown(
+    ' - Le modèle pour mitbih ne répond pas au exigences critiques nécessaires pour détecter arythmies cardiaque')
